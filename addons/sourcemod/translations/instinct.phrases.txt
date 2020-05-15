@@ -1,0 +1,8 @@
+"Phrases"
+{
+    "test"
+    {
+        "#format" "{1:s},{2:s}"
+        "en" "test {1}{2}"
+    }
+}
