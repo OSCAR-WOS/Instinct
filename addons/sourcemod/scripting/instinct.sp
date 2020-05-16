@@ -1,3 +1,6 @@
+#define MENU_PREFIX "Instinct (1.00)"
+#define CHAT_PREFIX "{magenta}Instinct {white}| "
+
 #define SQL_TIMEOUT 100
 #pragma semicolon 1
 #pragma newdecls required
@@ -8,8 +11,6 @@
 
 Database gD_Main = null;
 Database gD_Slave = null;
-
-float g_Pos[2][3];
 
 Zones g_Zones;
 Models g_Models;
@@ -26,19 +27,25 @@ public void OnPluginStart() {
     CreateTimer(0.01, Timer_Precise, _, TIMER_REPEAT);
 
     HookEvent("round_start", Hook_RoundStart);
+    ServerCommand("sm_reload_translations");
     ServerCommand("mp_restartgame 1");
 
     RegConsoleCmd("sm_test", Command_Test);
+    LoadTranslations("instinct.phrases");
+
+    for (int i = 1; i <= MaxClients; i++) {
+        if (!CheckPlayer(i, PLAYERCHECK_INGAME)) continue;
+        OnClientPutInServer(i);
+    }
+}
+
+public void OnConfigsExecuted() {
+    UserMsg SayText2 = GetUserMessageId("SayText2");
+    HookUserMessage(SayText2, Hook_SayText2, true);
 }
 
 public Action Command_Test(int client, int args) {
-    if (g_Pos[0][0] == 0.0) GetClientAbsOrigin(client, g_Pos[0]);
-    else {
-        GetClientAbsOrigin(client, g_Pos[1]);
-
-        TE_SetupBeamPoints(g_Pos[0], g_Pos[1], g_Models.Start, g_Models.Glow, 0, 30, 1.0, 5.0, 5.0, 2, 1.0, {255, 0, 0, 255}, 5);
-        TE_SendToAll();
-    }
+    return Plugin_Handled;
 }
 
 public void OnMapStart() {
@@ -52,39 +59,15 @@ public void OnClientAuthorized(int client, const char[] auth) {
     Sql_LoadClient(client);
 }
 
-Action Timer_Precise(Handle timer, any data) {
-    if (g_Queries.Length == 0) return;
+public void OnClientPutInServer(int client) {
 
-    char[] queryString = new char[512];
-    Transaction txMain = new Transaction();
-    Transaction txSlave = new Transaction();
-    ArrayList queriesClone = g_Queries.Clone();
-    g_Queries.Clear();
-
-    for (int i = 0; i < queriesClone.Length; i++) {
-        Query query = queriesClone.Get(i);
-        query.GetQueryString(queryString, 512);
-
-        if (query.Main) {
-            if (gD_Main != null) txMain.AddQuery(queryString, query);
-            else {
-                if (query.Attempt++ < SQL_TIMEOUT) g_Queries.Push(query);
-                else LogError("SQL MAIN ATTEMPT FAILED: %s", queryString);
-            }
-        } else {
-            if (gD_Slave != null) txSlave.AddQuery(queryString, query);
-            else {
-                if (query.Attempt++ < SQL_TIMEOUT) g_Queries.Push(query);
-                else LogError("SQL SLAVE ATTEMPT FAILED: %s", queryString);
-            }
-        }
-    }   
-
-    if (gD_Main != null) gD_Main.Execute(txMain, Sql_ExecuteMainTransactionSuccess, Sql_ExecuteMainTransactionError);
-    if (gD_Slave != null) gD_Slave.Execute(txSlave, Sql_ExecuteSlaveTransactionSuccess, Sql_ExecuteSlaveTransactionError);
-    delete queriesClone;
 }
 
-#include "instinct\hook.sp"
-#include "instinct\sql.sp"
-#include "instinct\zone.sp"
+Action Timer_Precise(Handle timer, any data) {
+    Sql_Precise();
+}
+
+#include "instinct/admin.sp"
+#include "instinct/hook.sp"
+#include "instinct/sql.sp"
+#include "instinct/zone.sp"

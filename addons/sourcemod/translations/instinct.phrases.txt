@@ -1,8 +1,37 @@
 "Phrases"
 {
-    "test"
+    "menu_chat_namecolor"
     {
-        "#format" "{1:s},{2:s}"
-        "en" "test {1}{2}"
+        "en" "Chat Name Color"
+    }
+
+    "announce_chat_namecolor_change_grey"
+    {
+        "en" "You have successfully changed your name color to Grey"
+    }
+
+    "announce_chat_namecolor_change_white"
+    {
+        "en" "You have successfully changed your name color to White"
+    }
+
+    "announce_chat_namecolor_change_dev"
+    {
+        "en" "You have successfully changed your name color to Dev"
+    }
+
+    "grey"
+    {
+        "en" "Grey"
+    }
+
+    "white"
+    {
+        "en" "White"
+    }
+
+    "dev"
+    {
+        "en" "Dev"
     }
 }

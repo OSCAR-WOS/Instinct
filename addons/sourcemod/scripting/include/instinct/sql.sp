@@ -1,7 +1,7 @@
 #include <sourcemod>
 
 char gC_CreateTables[][] = {
-	"CREATE TABLE IF NOT EXISTS `users` (`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT, `steamid` BIGINT NOT NULL) ENGINE = InnoDB;",
+	"CREATE TABLE IF NOT EXISTS `users` (`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT, `steamid` BIGINT NOT NULL, `vip` INT NOT NULL) ENGINE = InnoDB;",
 	"CREATE TABLE IF NOT EXISTS `records` (`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT, `map` VARCHAR(128) NOT NULL, `user` INT NOT NULL, `time` INT NOT NULL, `timestamp` INT NOT NULL, `group` INT NOT NULL, `style` INT NOT NULL, `server` INT NOT NULL) ENGINE = InnoDB;",
 	"CREATE TABLE IF NOT EXISTS `checkpoints` (`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT, `recordid` INT NOT NULL, `checkpointid` INT NOT NULL, `time` INT NOT NULL, `timestamp` INT NOT NULL) ENGINE = InnoDB;",
 	"CREATE TABLE IF NOT EXISTS `zones` (`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT, `map` VARCHAR(128) NOT NULL, `zoner` INT NOT NULL, `timestamp` INT NOT NULL, `type` INT NOT NULL, `group` INT NOT NULL, `server` INT NOT NULL, `x1` FLOAT NOT NULL, `x2` FLOAT NOT NULL, `x3` FLOAT NOT NULL, `y1` FLOAT NOT NULL, `y2` FLOAT NOT NULL, `y3` FLOAT NOT NULL, `p1` FLOAT NOT NULL, `p2` FLOAT NOT NULL, `p3` FLOAT NOT NULL) ENGINE = InnoDB;"
@@ -77,7 +77,7 @@ void Sql_LoadClient(int client) {
     char[] queryString = new char[512];
 
     if (!GetClientAuthId(client, AuthId_SteamID64, auth, 64)) return;
-    FormatEx(queryString, 512, "SELECT `id` FROM `users` WHERE `steamid` = %s;", auth);
+    FormatEx(queryString, 512, "SELECT `id`, `vip` FROM `users` WHERE `steamid` = %s;", auth);
 
     Query query = new Query(queryString);
     query.Type = QueryType_SelectClient;
@@ -136,12 +136,13 @@ void Sql_SelectClientPost(int client, DBResultSet result) {
     if (result.RowCount != 0) {
         result.FetchRow();
         g_Players[client].Id = result.FetchInt(0);
+        g_Players[client].Vip = result.FetchInt(1);
     } else {
         char[] auth = new char[64];
         char[] queryString = new char[512];
 
         if (!GetClientAuthId(client, AuthId_SteamID64, auth, 64)) return;
-        FormatEx(queryString, 512, "INSERT INTO `users` (`steamid`) VALUES (%s);", auth);
+        FormatEx(queryString, 512, "INSERT INTO `users` (`steamid`, `vip`) VALUES (%s, 0);", auth);
 
         Query query = new Query(queryString);
         query.Type = QueryType_InsertClient;
@@ -184,4 +185,37 @@ void Sql_InsertZonePost(int zoneIndex, DBResultSet result) {
     zone.Id = result.InsertId;
 
     g_Zones.SetArray(zoneIndex, zone);
+}
+
+void Sql_Precise() {
+    if (g_Queries.Length == 0) return;
+
+    char[] queryString = new char[512];
+    Transaction txMain = new Transaction();
+    Transaction txSlave = new Transaction();
+    ArrayList queriesClone = g_Queries.Clone();
+    g_Queries.Clear();
+
+    for (int i = 0; i < queriesClone.Length; i++) {
+        Query query = queriesClone.Get(i);
+        query.GetQueryString(queryString, 512);
+
+        if (query.Main) {
+            if (gD_Main != null) txMain.AddQuery(queryString, query);
+            else {
+                if (query.Attempt++ < SQL_TIMEOUT) g_Queries.Push(query);
+                else LogError("SQL MAIN ATTEMPT FAILED: %s", queryString);
+            }
+        } else {
+            if (gD_Slave != null) txSlave.AddQuery(queryString, query);
+            else {
+                if (query.Attempt++ < SQL_TIMEOUT) g_Queries.Push(query);
+                else LogError("SQL SLAVE ATTEMPT FAILED: %s", queryString);
+            }
+        }
+    }   
+
+    if (gD_Main != null) gD_Main.Execute(txMain, Sql_ExecuteMainTransactionSuccess, Sql_ExecuteMainTransactionError);
+    if (gD_Slave != null) gD_Slave.Execute(txSlave, Sql_ExecuteSlaveTransactionSuccess, Sql_ExecuteSlaveTransactionError);
+    delete queriesClone;
 }

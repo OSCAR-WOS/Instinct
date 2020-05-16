@@ -8,6 +8,19 @@
             "type": "shell",
             "command": ".\\compile.bat",
             "args": [],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Mac",
+            "type": "shell",
+            "command": "~/Documents/GitHub/scripting/spcomp",
+            "args": [
+                "addons/sourcemod/scripting/instinct.sp",
+                "-iaddons/sourcemod/scripting/include",
+                "-oaddons/sourcemod/plugins/instinct.smx"
+            ],
+            "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true

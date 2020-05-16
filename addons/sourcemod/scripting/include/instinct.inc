@@ -15,9 +15,7 @@ enum {
     QueryType_SelectClient,
     QueryType_InsertClient,
     QueryType_SelectZones,
-    QueryType_InsertZone,
-    QueryType_UpdateZone,
-    QueryType_DeleteZone
+    QueryType_InsertZone
 }
 
 enum struct Models {
@@ -44,6 +42,8 @@ enum struct Zone {
 
 enum struct Player {
     int Id;
+    int Vip;
+    int ChatNameColorOffset;
 }
 
 methodmap Query < StringMap {
@@ -131,24 +131,79 @@ methodmap Zones < ArrayList {
 }
 
 stock bool CheckPlayer(int client, int flags) {
-	if (client <= 0 || client > MaxClients) return false;
+    if (client <= 0 || client > MaxClients) return false;
 
-	if (flags & PLAYERCHECK_AUTHORIZED) {
-		if (!IsClientAuthorized(client)) return false;
-	}
+    if (flags & PLAYERCHECK_AUTHORIZED) {
+        if (!IsClientAuthorized(client)) return false;
+    }
 
-	if (flags & PLAYERCHECK_VALID) {
-		if (IsFakeClient(client)) return false;
-	}
+    if (flags & PLAYERCHECK_VALID) {
+        if (IsFakeClient(client)) return false;
+    }
 
-	if (flags & PLAYERCHECK_INGAME) {
-		if (!IsClientInGame(client)) return false;
-	}
+    if (flags & PLAYERCHECK_INGAME) {
+        if (!IsClientInGame(client)) return false;
+    }
 
-	if (flags & PLAYERCHECK_ALIVE) {
-		if (!IsPlayerAlive(client)) return false;
-	}
+    if (flags & PLAYERCHECK_ALIVE) {
+        if (!IsPlayerAlive(client)) return false;
+    }
 
+    return true;
+}
 
-	return true;
+char gC_ChatColors[][] = {
+    "{white}",
+    "{darkred}",
+    "{purple}",
+    "{green}",
+    "{olive}",
+    "{lime}",
+    "{red}",
+    "{grey}",
+    "{yellow}",
+    "{orange}",
+    "{blue}",
+    "{darkblue}",
+    "{magenta}",
+    "{lightred}"
+};
+
+char gC_ChatColorCodes[][] = {
+    "\x01",
+    "\x02",
+    "\x03",
+    "\x04",
+    "\x05",
+    "\x06",
+    "\x07",
+    "\x08",
+    "\x09",
+    "\x10",
+    "\x0B",
+    "\x0C",
+    "\x0E",
+    "\x0F"
+};
+
+enum {
+    Vip_None = 0,
+    Vip_Standard,
+    Vip_Dev = -1
+};
+
+stock void Timer_PrintToChat(int client, const char[] message, bool tag = true, any ...) {
+    SetGlobalTransTarget(client);
+
+    char[] formattedMessage = new char[512];
+    VFormat(formattedMessage, 512, message, 4);
+
+    if (tag) Format(formattedMessage, 512, " %s%s", CHAT_PREFIX, formattedMessage);
+    else Format(formattedMessage, 512, " %s", formattedMessage);
+
+    for (int i = 0; i < sizeof(gC_ChatColorCodes); i++) {
+        ReplaceString(formattedMessage, 512, gC_ChatColors[i], gC_ChatColorCodes[i]);
+    }
+
+    PrintToChat(client, formattedMessage);
 }
