@@ -8,7 +8,10 @@
             "type": "shell",
             "command": ".\\compile.bat",
             "args": [],
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         },
         {
@@ -21,10 +24,7 @@
                 "-oaddons/sourcemod/plugins/instinct.smx"
             ],
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
+            "group": "build"
         }
     ]
 }

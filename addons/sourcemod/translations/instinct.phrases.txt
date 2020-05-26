@@ -1,37 +1,262 @@
 "Phrases"
 {
-    "menu_chat_namecolor"
+    "menu_admin"
     {
-        "en" "Chat Name Color"
+        "en" "Admin"
     }
 
-    "announce_chat_namecolor_change_grey"
+    "menu_zone"
     {
-        "en" "You have successfully changed your name color to Grey"
+        "en" "Zone"
     }
 
-    "announce_chat_namecolor_change_white"
+    "menu_zoning_add"
     {
-        "en" "You have successfully changed your name color to White"
+        "en" "Add Zone"
     }
 
-    "announce_chat_namecolor_change_dev"
+    "menu_zoning_edit"
     {
-        "en" "You have successfully changed your name color to Dev"
+        "en" "Edit Zone"
     }
 
-    "grey"
+    "menu_zoning_delete"
     {
-        "en" "Grey"
+        "en" "Delete Zone"
     }
 
-    "white"
+    "menu_zoning_delete_confirm1"
     {
-        "en" "White"
+        "en" "Do you wish to delete this zone?"
     }
 
-    "dev"
+    "menu_zoning_delete_confirm2"
     {
-        "en" "Dev"
+        "en" "This action is irreversible!"
+    }
+
+    "menu_yes"
+    {
+        "en" "Yes"
+    }
+
+    "menu_zoning_save"
+    {
+        "en" "Save Zone"
+    }
+
+    "menu_zoning_update"
+    {
+        "en" "Update Zone"
+    }
+
+    "menu_zoning_updatespawn"
+    {
+        "en" "Update Zone Spawn"
+    }
+
+    "menu_zoning_editzone"
+    {
+        "en" "Edit Selected Zone"
+    }
+
+    "menu_zoning_deletezone"
+    {
+        "en" "Delete Selected Zone"
+    }
+
+    "menu_zoning_edit1"
+    {
+        "en" "Edit Point 1"
+    }
+
+    "menu_zoning_edit2"
+    {
+        "en" "Edit Point 2"
+    }
+
+    "menu_zoning_editx"
+    {
+        "en" "Edit (X - Red)"
+    }
+
+    "menu_zoning_edity"
+    {
+        "en" "Edit (Y - Green)"
+    }
+
+    "menu_zoning_editz"
+    {
+        "en" "Edit (Z - Blue)"
+    }
+
+    "menu_zonetype"
+    {
+        "en" "Zone Type"
+    }
+
+    "menu_zonetype_start"
+    {
+        "en" "Zone Type: Start"
+    }
+
+    "menu_zonetype_end"
+    {
+        "en" "Zone Type: End"
+    }
+
+    "menu_zonetype_checkpoint"
+    {
+        "en" "Zone Type: Checkpoint"
+    }
+
+    "menu_zonetype_pvp"
+    {
+        "en" "Zone Type: Pvp"
+    }
+
+    "zonetype_start"
+    {
+        "en" "Start"
+    }
+
+    "zonetype_end"
+    {
+        "en" "End"
+    }
+
+    "zonetype_checkpoint"
+    {
+        "en" "Checkpoint"
+    }
+
+    "zonetype_pvp"
+    {
+        "en" "Pvp"
+    }
+
+    "menu_zonegroup_normal"
+    {
+        "en" "Zone Group: Normal"
+    }
+
+    "menu_zonegroup_newbonus"
+    {
+        "en" "Zone Group: New Bonus"
+    }
+
+    "menu_zonegroup_bonus"
+    {
+        "#format" "{1:i}"
+        "en" "Zone Group: Bonus {1}"
+    }
+
+    "zonegroup_normal"
+    {
+        "en" "Normal"
+    }
+
+    "zonegroup_bonus"
+    {
+        "#format" "{1:i}"
+        "en" "Bonus {1}"
+    }
+
+    "menu_zonehide_disabled"
+    {
+        "en" "Hidden: False"
+    }
+
+    "menu_zonehide_enabled"
+    {
+        "en" "Hidden: True"
+    }
+
+    "chat_point_not_in_box"
+    {
+        "en" "You are currently not in the active region"
+    }
+
+    "chat_style_found"
+    {
+        "#format" "{1:s},{2:s}"
+        "en" "You style has been changed to {lightred}{1} {white}({yellow}{2}{white})"
+    }
+
+    "menu_settings"
+    {
+        "en" "Settings"
+    }
+
+    "menu_settings_checkpoints"
+    {
+        "en" "Checkpoint Settings"
+    }
+
+    "menu_settings_records"
+    { 
+        "en" "Record Settings"
+    }
+
+    "menu_settings_checkpoints_rank"
+    {
+        "en" "Rank"
+    }
+
+    "menu_settings_checkpoints_rank_info"
+    {
+        "en" "Displays current predicted checkpoint rank\nExample: (#1)"
+    }
+
+    "menu_settings_checkpoints_diff"
+    {
+        "en" "Difference"
+    }
+
+    "menu_settings_checkpoints_diff_info"
+    {
+        "en" "Displays the difference between times\nExample: (+00:01.164)"
+    }
+
+    "menu_settings_checkpoints_pb"
+    {
+        "en" "Personal Best"
+    }
+
+    "menu_settings_checkpoints_pb_info"
+    {
+        "en" "Displays your personal best time\nExample: PB: (03:42.823)"
+    }
+
+    "menu_settings_checkpoints_gb"
+    {
+        "en" "Global Best"
+    }
+
+    "menu_settings_checkpoints_gb_info"
+    {
+        "en" "Displays the global best time\nExample: GB: (03:22.823)"
+    }
+
+    "menu_enabled"
+    {
+        "en" "Enabled"
+    }
+
+    "menu_disabled"
+    {
+        "en" "Disabled"
+    }
+
+    "chat_checkpoint"
+    {
+        "#format" "{1:s}"
+        "en" "Checkpoint: {lime}{1}{white}"
+    }
+
+    "chat_finish"
+    {
+        "#format" "{1:s}"
+        "en" "Finish: {lime}{1}{white}"
     }
 }
